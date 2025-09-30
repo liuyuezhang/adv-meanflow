@@ -77,3 +77,15 @@ class MeanFlow(nn.Module):
         u = net(z_1, (t, t - r), aug_cond=None)
         z_0 = z_1 - u
         return z_0
+    
+    def purify(self, z, net=None):
+        net = net if net is not None else self.net_ema                
+        samples_shape = z.shape
+        device = z.device
+        z_1 = z
+
+        t = torch.ones(samples_shape[0], device=device)
+        r = torch.zeros(samples_shape[0], device=device)
+        u = net(z_1, (t, t - r), aug_cond=None)
+        z_0 = z_1 - u
+        return z_0
